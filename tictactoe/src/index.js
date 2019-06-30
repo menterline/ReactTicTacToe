@@ -10,9 +10,24 @@ function Square(props) {
   );
 }
 
-class Board extends React.Component {
+function WinningSquare(props) {
+  return (
+    <button className="winning-square">
+      {props.value}
+    </button>
+  );
+}
 
+class Board extends React.Component {
   renderSquare(i) {
+	if (this.props.winners)
+	{
+		if (this.props.winners.includes(i)) {
+			return (<WinningSquare
+				value={this.props.squares[i]}/>
+			);
+		}
+	}
     return (<Square
       value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)} />
@@ -54,7 +69,7 @@ function status(winner, xIsNext) {
 function MoveList(props) {
   return (
     <li className="moveList" key={props.move}>
-      <button className={props.currentMoveButton} onClick={() => props.onClick(props.move)}>{props.desc}</button>
+      <button className={"moveButton"} onClick={() => props.onClick(props.move)}>{props.desc}</button>
     </li>
   );
 }
@@ -96,6 +111,15 @@ class Game extends React.Component {
     });
   }
 
+  getWinningCharacter(squares, winner)
+  {	
+	if (winner)
+	{
+		return squares[winner];
+	}
+	return null;
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -104,12 +128,11 @@ class Game extends React.Component {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
-      const currentMoveButton = move === history.length ? "moveButton" : "currentButton";
       return (
         <MoveList
           move={move}
           desc={desc}
-          currentMoveButton={currentMoveButton}
+          currentMoveButton={move}
           onClick={() => this.jumpTo(move, history)} />);
     });
 
@@ -118,10 +141,11 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
-            onClick={(i) => this.handleClick(i)} />
+            onClick={(i) => this.handleClick(i)}
+			winners={winner}/>
         </div>
         <div className="game-info">
-          <div>{status(winner, this.state.xIsNext)}</div>
+          <div>{status(this.getWinningCharacter(current, winner), this.state.xIsNext)}</div>
           <ol>{moves}</ol>
         </div>
       </div>
@@ -143,7 +167,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [a,b,c];
     }
   }
   return null;

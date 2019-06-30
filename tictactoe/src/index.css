@@ -17,7 +17,6 @@ ol, ul {
   position: relative
 }
 
-.currentButton
 .moveButton {
   position: relative;
   bottom: 5px;
@@ -27,12 +26,25 @@ ol, ul {
   font-weight: normal
 }
 
-.currentButton {
-  font-weight: bold
-}
 .status {
   margin-bottom: 10px;
 }
+
+.winning-square {
+  background: #00f;
+  border: 1px solid #999;
+  float: left;
+  font-size: 60px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 80px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 80px;
+}
+
 
 .square {
   background: #fff;
